@@ -6,7 +6,7 @@ import { CreateUserController } from "../controllers/create-user/createUser";
 import { MongoUpdateUserRepository } from "../repositories/update-user/mongo-UpdateUser";
 import { UpdateUserController } from "../controllers/update-user/updateUser";
 import { MongoDeleteUserRepository } from "../repositories/delete-user/mongo-DeleteUser";
-import { DeleteUserControler } from "../controllers/delete-user/delete-user";
+import { DeleteUserControler } from "../controllers/delete-user/delete-User";
 
 const user = Router();
 
