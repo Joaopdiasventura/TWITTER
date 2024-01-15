@@ -5,8 +5,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon --watch src --exec node_modules\\.bin\\ts-node src/app.ts -e ts",
-    "build": "npx tsc ./src/app.ts",
-    "start": "node ./src/app.js"
+    "build": "yarn install",
+    "start": "npx ts-node ./src/app.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",
