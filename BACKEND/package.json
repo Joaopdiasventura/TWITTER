@@ -4,12 +4,15 @@
   "main": "app.js",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon --watch src --exec node_modules\\.bin\\ts-node src/app.ts -e ts"
+    "dev": "nodemon --watch src --exec node_modules\\.bin\\ts-node src/app.ts -e ts",
+    "build": "npx tsc ./src/app.ts",
+    "start": "node ./src/app.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "ts-node": "^10.9.2",
     "mongodb": "^6.3.0"
   },
   "devDependencies": {
@@ -22,7 +25,6 @@
     "eslint-config-prettier": "^9.1.0",
     "nodemon": "^3.0.2",
     "prettier": "^3.2.2",
-    "ts-node": "^10.9.2",
     "tsc": "^2.0.4",
     "typescript": "^5.3.3"
   }
