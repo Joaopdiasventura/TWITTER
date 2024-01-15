@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import { MongoClient } from "./database/mongo";
 import  user  from "./routes/user";
+import morgan from "morgan";
 
 config();
 
@@ -13,6 +14,7 @@ const main = async () => {
     
     app.use(cors());
     app.use(express.json())
+    app.use(morgan("dev"))
     
     app.use(user);
 
