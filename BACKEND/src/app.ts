@@ -1,7 +1,7 @@
 import {config} from "dotenv";
 import express from "express";
 import cors from "cors";
-import { MongoClient } from "./database/mongo";"./controllers/create-user/createUser";
+import { MongoClient } from "./database/mongo";
 import  user  from "./routes/user";
 
 config();
