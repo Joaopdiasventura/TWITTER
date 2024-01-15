@@ -4,10 +4,11 @@
   "main": "app.js",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon --watch src --exec node_modules\\.bin\\ts-node src/app.ts -e ts",
-    "build": "yarn install",
-    "start": "npx ts-node ./src/app.ts"
-  },
+    "install-deps": "yarn install",
+    "build": "tsc",
+    "start": "node dist/app.js",
+    "dev": "nodemon --watch src --exec ts-node src/app.ts -e ts"
+  },  
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
