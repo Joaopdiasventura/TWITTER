@@ -4,7 +4,7 @@
   "main": "app.js",
   "license": "MIT",
   "scripts": {
-    "install-deps": "yarn install",
+    "install-deps": "yarn install && prisma generate",
     "build-and-start": "tsc && node dist/app.js",
     "dev": "nodemon --watch src --exec ts-node src/app.ts -e ts"
   },
