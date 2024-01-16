@@ -6,6 +6,7 @@ import morgan from "morgan";
 import session from "express-session";
 import passport from "passport";
 import logar from "./config/auth";
+import post from "./routes/post";
 
 config();
 
@@ -32,6 +33,7 @@ const main = async () => {
     logar(passport);
 
     app.use(user);
+    app.use(post);
     
     app.listen(port, ()=> console.log(`Servidor rodando na porta ${port}`));
 };

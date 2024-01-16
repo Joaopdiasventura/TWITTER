@@ -26,8 +26,6 @@ export class CreateUserController implements IController{
             const hash = await bcrypt.hash(body.password, salt);
 
             body.password = hash;
-            console.log(body);
-            
 
             const user = await this.createUserRepository.createUser(body);
 
