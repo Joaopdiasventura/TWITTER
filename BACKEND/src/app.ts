@@ -1,7 +1,6 @@
 import {config} from "dotenv";
 import express from "express";
 import cors from "cors";
-import { MongoClient } from "./database/mongo";
 import  user  from "./routes/user";
 import morgan from "morgan";
 import session from "express-session";
@@ -33,8 +32,6 @@ const main = async () => {
     logar(passport);
 
     app.use(user);
-
-    await MongoClient.connect().then(()=>console.log("Conectado ao banco de dados..."));
     
     app.listen(port, ()=> console.log(`Servidor rodando na porta ${port}`));
 };
