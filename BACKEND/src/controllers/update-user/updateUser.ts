@@ -5,6 +5,7 @@ import {
   IUpdateUserRepository,
   UpdateUserParams,
 } from "./protocols";
+import bcrypt from "bcrypt"
 
 export class UpdateUserController implements IController {
   constructor(private readonly updateUserRepository: IUpdateUserRepository) {}
@@ -22,6 +23,13 @@ export class UpdateUserController implements IController {
       }
 
       const { body } = httpRequest;
+
+      if (body.password) {
+        const salt = 10;
+        const hash = await bcrypt.hash(body.password, salt);
+
+        body.password = hash;
+      }
 
       const user = await this.updateUserRepository.updateUser(email, body);
 

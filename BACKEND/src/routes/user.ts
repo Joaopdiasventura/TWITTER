@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { MongoCreateUserRepository } from "../repositories/create-user/mongo-createUser";
-import { MongoGetUserRepository } from "../repositories/get-users/mongo-getUsers";
+import { CreateUserRepository } from "../repositories/create-user/createUser";
+import { GetUserRepository } from "../repositories/get-users/getUsers";
 import { GetUsersController } from "../controllers/get-users/getUsers";
 import { CreateUserController } from "../controllers/register-user/createUser";
-import { MongoUpdateUserRepository } from "../repositories/update-user/mongo-UpdateUser";
+import { UpdateUserRepository } from "../repositories/update-user/updateUser";
 import { UpdateUserController } from "../controllers/update-user/updateUser";
-import { MongoDeleteUserRepository } from "../repositories/delete-user/mongo-DeleteUser";
+import { DeleteUserRepository } from "../repositories/delete-user/deleteUser";
 import { DeleteUserControler } from "../controllers/delete-user/delete-User";
 import { PassportRequest } from "../controllers/protocols";
 import { ControllerLogUser } from "../controllers/log-user/logUser";
@@ -14,9 +14,9 @@ import { logParams } from "../controllers/log-user/protocols";
 const user = Router();
 
 user.get("/", async (req, res) => {
-  const mongoGetUserRepository = new MongoGetUserRepository();
+  const getUserRepository = new GetUserRepository();
 
-  const getUsersController = new GetUsersController(mongoGetUserRepository);
+  const getUsersController = new GetUsersController(getUserRepository);
 
   const { statusCode, body } = await getUsersController.handle();
 
@@ -24,10 +24,10 @@ user.get("/", async (req, res) => {
 });
 
 user.post("/user", async (req, res) => {
-  const mongoCreateUserRepository = new MongoCreateUserRepository();
+  const createUserRepository = new CreateUserRepository();
 
   const createUserController = new CreateUserController(
-    mongoCreateUserRepository
+    createUserRepository
   );
 
   const { body, statusCode } = await createUserController.handle({
@@ -38,9 +38,9 @@ user.post("/user", async (req, res) => {
 });
 
 user.patch("/user/:email", async (req, res) => {
-  const mongoUpdateUserRepository = new MongoUpdateUserRepository();
+  const updateUserRepository = new UpdateUserRepository();
   const updateUserController = new UpdateUserController(
-    mongoUpdateUserRepository
+    updateUserRepository
   );
 
   const { body, statusCode } = await updateUserController.handle({
@@ -52,9 +52,9 @@ user.patch("/user/:email", async (req, res) => {
 });
 
 user.delete("/user/:email", async (req, res) => {
-  const mongoDeleteUserRepository = new MongoDeleteUserRepository();
+  const deleteUserRepository = new DeleteUserRepository();
   const deleteUserController = new DeleteUserControler(
-    mongoDeleteUserRepository
+    deleteUserRepository
   );
 
   const { body, statusCode } = await deleteUserController.handle({
@@ -67,9 +67,9 @@ user.delete("/user/:email", async (req, res) => {
 user.post("/login", async (req, res) => {
     try {
         const controllerLogUser = new ControllerLogUser();
-        const response = await controllerLogUser.handle(req as unknown as PassportRequest<logParams>);
+        const {body, statusCode} = await controllerLogUser.handle(req as unknown as PassportRequest<logParams>);
 
-        res.status(response.statusCode).send(response.body);
+        res.status(statusCode).send(body);
     } catch (error) {
         res.status(500).send(error);
     }
