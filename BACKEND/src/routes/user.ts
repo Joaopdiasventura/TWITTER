@@ -9,6 +9,8 @@ import { PassportRequest } from "../controllers/protocols";
 import { ControllerLogUser } from "../controllers/log-user/logUser";
 import { logParams } from "../controllers/log-user/protocols";
 import axios from "axios";
+import { GetUsersRepository } from "../repositories/get-users/getUsers";
+import { GetUsersController } from "../controllers/get-users/getUsers";
 
 const app = axios.create({
   baseURL: "https://email-4ocx.onrender.com"
@@ -77,6 +79,7 @@ user.delete("/user/:email", async (req, res) => {
 });
 
 user.post("/login", async (req, res) => {
+  console.log(req.body);
     try {
         const controllerLogUser = new ControllerLogUser();
         const {body, statusCode} = await controllerLogUser.handle(req as unknown as PassportRequest<logParams>);
@@ -86,5 +89,22 @@ user.post("/login", async (req, res) => {
         res.status(500).send(error);
     }
 });
+
+user.get("/search/:name",async (req, res) => {
+  try {
+
+    const getUsersRepository = new GetUsersRepository();
+    const getUsersController = new GetUsersController(getUsersRepository);
+
+    const { body , statusCode} = await getUsersController.handle({
+      body: req.params
+    })
+
+    res.status(statusCode).send(body);
+
+  } catch (error) {
+    return res.send(error)
+  }
+})
 
 export default user;

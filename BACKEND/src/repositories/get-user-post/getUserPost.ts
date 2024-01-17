@@ -1,9 +1,9 @@
 import { IGetUserPostRepository } from "../../controllers/get-user-post/protocols";
-import { Post } from "../../models/post";
+import { perfil } from "../../models/perfil";
 import prisma from "../../services/prisma";
 
 export class GetUserPostRepository implements IGetUserPostRepository{
-    async getUserPost(email: string): Promise<Post[]> {
+    async getUserPost(email: string): Promise<perfil> {
 
         const user = await prisma.user.findUnique({
             where:{ email: email }
@@ -18,7 +18,7 @@ export class GetUserPostRepository implements IGetUserPostRepository{
             }
         });
 
-        return posts
+        return {user, posts}
     }
 
 }

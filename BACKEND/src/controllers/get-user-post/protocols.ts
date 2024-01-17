@@ -1,5 +1,5 @@
-import { Post } from "../../models/post";
+import { perfil } from "../../models/perfil";
 
 export interface IGetUserPostRepository {
-    getUserPost(email: string): Promise<Post[]>
+    getUserPost(email: string): Promise<perfil>
 }
