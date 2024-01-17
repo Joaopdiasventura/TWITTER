@@ -8,17 +8,27 @@ datasource db {
 }
 
 model User {
-  email    String   @id @map("_id")
+  email    String @id @map("_id")
   name     String
   password String
   posts    Post[]
+  likes    Like[]
 }
 
 model Post {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  title   String
-  content String
-  creator  String
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  content     String
+  creator     String
+  creatorUser User     @relation(fields: [creator], references: [email])
+  createdat   DateTime
+  likes       Like[]
+}
+
+model Like {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  creator     String
+  post        String @db.ObjectId
   creatorUser User   @relation(fields: [creator], references: [email])
-  createdat DateTime
+  postLiked   Post   @relation(fields: [post], references: [id])
 }

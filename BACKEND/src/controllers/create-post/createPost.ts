@@ -12,7 +12,7 @@ export class CreatePostController implements IController{
 
             return {
                 statusCode: 201,
-                body: post
+                body: post 
             }
 
         } catch (error) {

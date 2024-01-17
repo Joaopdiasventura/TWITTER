@@ -12,6 +12,9 @@ export class GetUserPostRepository implements IGetUserPostRepository{
         const posts = await prisma.post.findMany({
             where: {
                 creator: user.email
+            },  
+            orderBy: {
+                id: 'desc',
             }
         });
 

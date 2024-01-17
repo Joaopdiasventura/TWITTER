@@ -7,6 +7,7 @@ import session from "express-session";
 import passport from "passport";
 import logar from "./config/auth";
 import post from "./routes/post";
+import like from "./routes/like";
 
 config();
 
@@ -34,6 +35,7 @@ const main = async () => {
 
     app.use(user);
     app.use(post);
+    app.use(like);
     
     app.listen(port, ()=> console.log(`Servidor rodando na porta ${port}`));
 };
