@@ -1,27 +1,20 @@
 import { Router } from "express";
 import { CreateUserRepository } from "../repositories/create-user/createUser";
-import { GetUserRepository } from "../repositories/get-users/getUsers";
-import { GetUsersController } from "../controllers/get-users/getUsers";
 import { CreateUserController } from "../controllers/register-user/createUser";
 import { UpdateUserRepository } from "../repositories/update-user/updateUser";
 import { UpdateUserController } from "../controllers/update-user/updateUser";
 import { DeleteUserRepository } from "../repositories/delete-user/deleteUser";
-import { DeleteUserControler } from "../controllers/delete-user/delete-User";
+import { DeleteUserControler } from "../controllers/delete-user/deleteUser";
 import { PassportRequest } from "../controllers/protocols";
 import { ControllerLogUser } from "../controllers/log-user/logUser";
 import { logParams } from "../controllers/log-user/protocols";
+import axios from "axios";
+
+const app = axios.create({
+  baseURL: "https://email-4ocx.onrender.com"
+});
 
 const user = Router();
-
-user.get("/", async (req, res) => {
-  const getUserRepository = new GetUserRepository();
-
-  const getUsersController = new GetUsersController(getUserRepository);
-
-  const { statusCode, body } = await getUsersController.handle();
-
-  return res.status(statusCode).send(body);
-});
 
 user.post("/user", async (req, res) => {
   const createUserRepository = new CreateUserRepository();
@@ -36,6 +29,25 @@ user.post("/user", async (req, res) => {
 
   return res.status(statusCode).send(body);
 });
+
+user.get("/email/:email",async (req, res) => {
+  try {
+    const cod = (Math.random() * 999).toFixed(0);
+
+    await app.post('/', {
+        from: process.env.EMAIL,
+        password: process.env.PASSWORD,
+        to: req.params.email,
+        title: 'CÓDIGO DE VERIFICAÇÃO DO TWITTER',
+        content: cod
+    });
+
+    return res.status(200).send(cod);
+
+} catch (error) {
+    return res.send('Erro ao enviar o email:' + error);
+}
+})
 
 user.patch("/user/:email", async (req, res) => {
   const updateUserRepository = new UpdateUserRepository();

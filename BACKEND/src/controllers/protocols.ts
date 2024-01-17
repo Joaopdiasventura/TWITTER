@@ -10,7 +10,7 @@ export interface HttpRequest <T>{
 }
 
 export interface IController {
-    handle(request: HttpRequest<unknown>): Promise<HttpResponse<unknown>>;
+    handle(request?: HttpRequest<unknown>): Promise<HttpResponse<unknown>>;
 }
 
 export interface PassportRequest<T> extends HttpRequest<T> {

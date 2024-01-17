@@ -3,8 +3,19 @@ import { CreatePostRepository } from "../repositories/create-post/createPost";
 import { CreatePostController } from "../controllers/create-post/createPost";
 import { GetUserPostRepository } from "../repositories/get-user-post/getUserPost";
 import { GetUserPostController } from "../controllers/get-user-post/getUserPost";
+import {GetAllPostsRepository} from "../repositories/get-all-posts/getAllPosts";
+import { GetAllPostsController } from "../controllers/get-all-posts/getAllPosts";
 
 const post = Router();
+
+post.get("/", async (req, res) => {
+    const getAllPostsRepository = new GetAllPostsRepository();
+    const getAllPostsController = new GetAllPostsController(getAllPostsRepository);
+
+    const {body, statusCode} = await getAllPostsController.handle();
+
+    return res.status(statusCode).send(body);
+});
 
 post.get("/post/:email",async (req, res) => {
     const getUserPostRepository = new GetUserPostRepository();
