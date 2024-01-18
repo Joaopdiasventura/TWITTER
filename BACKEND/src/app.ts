@@ -1,8 +1,8 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import { config } from "dotenv";
-import userRoutes from './routes/user'; // Substitua pelo caminho correto do seu arquivo de rotas
-import postRoutes from './routes/post'; // Substitua pelo caminho correto do seu arquivo de rotas
+import userRoutes from './routes/user';
+import postRoutes from './routes/post';
 import likeRoutes from './routes/like';
 
 config();
@@ -22,9 +22,10 @@ fastify.register(userRoutes);
 fastify.register(postRoutes);
 fastify.register(likeRoutes);
 
-fastify.listen({ port: port }, (err, address) => {
-    if (err) {
-      fastify.log.error(err);
-      process.exit(1);
-    }
-  });
+fastify.listen({ port: port, host: '0.0.0.0' }, (err, address) => {
+  if (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+  fastify.log.info(`Server listening on ${address}`);
+});
