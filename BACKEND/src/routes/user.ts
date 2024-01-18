@@ -13,6 +13,9 @@ import { GetUserPostsParams } from "../controllers/get-user-post/protocols";
 import { GetUsersParams } from "../controllers/get-users/protocols";
 import { logParams } from "../controllers/log-user/protocols";
 import { ControllerLogUser } from "../controllers/log-user/logUser";
+import { request } from "http";
+import { DecodeParams } from "../controllers/decode/protocols";
+import { DecodeController } from "../controllers/decode/decode";
 
 export default async function (fastify: FastifyInstance): Promise<void> {
   const app = axios.create({
@@ -88,6 +91,21 @@ export default async function (fastify: FastifyInstance): Promise<void> {
       const { body, statusCode } = await controllerLogUser.handle({
         body: Body,
       });
+      reply.status(statusCode).send(body);
+    } catch (error) {
+      reply.send(error);
+    }
+  });
+
+  fastify.post("/decode", async (request, reply) => {
+    const Body = request.body as DecodeParams;
+    try {
+      
+      const decodeController = new DecodeController();
+
+      const {body, statusCode} = await decodeController.handle({
+        body: Body
+      })
       reply.status(statusCode).send(body);
     } catch (error) {
       reply.send(error);

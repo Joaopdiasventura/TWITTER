@@ -10,8 +10,9 @@ const app = axios.create({
 const Body = css();
 
 interface FormData {
-    email: string;
-    senha: string;
+    email?: string;
+    senha?: string;
+    token?: string;
 }
 
 let code:number;
@@ -47,9 +48,11 @@ function Enter() {
         if (email && password) {
             try {
                 console.log(email);
-                const result = await app.post<FormData>("login", { email, password });
-                await localStorage.setItem("email", result.data.email);
-                navigate('/user');
+                const result = await app.post<FormData>("login", { email, password }).then(result => result.data);
+                localStorage.setItem("token", result);
+                setTimeout(() => {
+                    navigate('/user');
+                }, 500);
             } catch (error) {
                 console.error("Erro ao logar:", error);
             }
