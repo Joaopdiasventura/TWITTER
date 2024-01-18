@@ -1,21 +1,26 @@
-import { Router } from "express";
+import { FastifyInstance } from "fastify";
 import { CreateLikeRepository } from "../repositories/create-like/createLike";
 import { CreateLikeController } from "../controllers/create-like/createLike";
+import { createLikeParams } from "../controllers/create-like/protocols";
 
-const like = Router();
+export default async function (fastify: FastifyInstance): Promise<void> {
+  fastify.post("/like", async (request, reply) => {
+    const Body = request.body as createLikeParams;
 
-like.post("/like", async (req, res) => {
+    if (!Body || !Body.creator || !Body.post) {
+      return reply.status(400).send({ message: "Missing required fields: creator and post" });
+    }
+
     const createLikeRepository = new CreateLikeRepository();
     const createLikeController = new CreateLikeController(createLikeRepository);
 
     try {
-        const {body, statusCode} = await createLikeController.handle({
-            body: req.body
-        });
-        return res.status(statusCode).send(body);
+      const { body, statusCode } = await createLikeController.handle({
+        body: Body,
+      });
+      reply.status(statusCode).send(body);
     } catch (error) {
-        return res.send(error)
+      reply.send(error);
     }
-});
-
-export default like;
+  });
+}

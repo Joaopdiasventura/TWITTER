@@ -1,46 +1,51 @@
-import { Router } from "express";
+import { FastifyInstance } from "fastify";
 import { CreatePostRepository } from "../repositories/create-post/createPost";
 import { CreatePostController } from "../controllers/create-post/createPost";
 import { GetUserPostRepository } from "../repositories/get-user-post/getUserPost";
 import { GetUserPostController } from "../controllers/get-user-post/getUserPost";
-import {GetAllPostsRepository} from "../repositories/get-all-posts/getAllPosts";
+import { GetAllPostsRepository } from "../repositories/get-all-posts/getAllPosts";
 import { GetAllPostsController } from "../controllers/get-all-posts/getAllPosts";
+import { GetUserPostsParams } from "../controllers/get-user-post/protocols";
+import { CreatePostParams } from "../controllers/create-post/protocols";
 
-const post = Router();
-
-post.get("/", async (req, res) => {
+export default async function (fastify: FastifyInstance): Promise<void> {
+  fastify.get("/", async (request, reply) => {
     const getAllPostsRepository = new GetAllPostsRepository();
-    const getAllPostsController = new GetAllPostsController(getAllPostsRepository);
+    const getAllPostsController = new GetAllPostsController(
+      getAllPostsRepository
+    );
 
-    const {body, statusCode} = await getAllPostsController.handle();
+    const { body, statusCode } = await getAllPostsController.handle();
+    reply.status(statusCode).send(body);
+  });
 
-    return res.status(statusCode).send(body);
-});
-
-post.get("/post/:email",async (req, res) => {
+  fastify.get("/post/:email", async (request, reply) => {
+    const Params = request.params as GetUserPostsParams
     const getUserPostRepository = new GetUserPostRepository();
-    const getUserPostController = new GetUserPostController(getUserPostRepository);
+    const getUserPostController = new GetUserPostController(
+      getUserPostRepository
+    );
 
-    const {body, statusCode} = await getUserPostController.handle({
-        params: req.params
+    const { body, statusCode } = await getUserPostController.handle({
+      params: Params,
     });
+    reply.status(statusCode).send(body);
+  });
 
-    return res.status(statusCode).send(body);
-})
+  fastify.post("/post", async (request, reply) => {
 
-post.post("/post",async (req, res) => {
+    const Body = request.body as CreatePostParams;
+
     const createPostRepository = new CreatePostRepository();
     const createPostController = new CreatePostController(createPostRepository);
 
     try {
-        const {statusCode, body} = await createPostController.handle({
-            body: req.body,
-          })
-        return res.status(statusCode).send(body);
+      const { statusCode, body } = await createPostController.handle({
+        body: Body
+      });
+      reply.status(statusCode).send(body);
     } catch (error) {
-        return res.send(error)
+      reply.send(error);
     }
-
-});
-
-export default post;
+  });
+}

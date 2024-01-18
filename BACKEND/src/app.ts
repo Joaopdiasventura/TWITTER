@@ -1,38 +1,30 @@
+import Fastify from 'fastify';
+import cors from '@fastify/cors';
 import { config } from "dotenv";
-import express from "express";
-import cors from "cors";
-import user from "./routes/user";
-import morgan from "morgan";
-import session from "express-session";
-import passport from "passport";
-import logar from "./config/auth";
-import post from "./routes/post";
-import like from "./routes/like";
+import userRoutes from './routes/user'; // Substitua pelo caminho correto do seu arquivo de rotas
+import postRoutes from './routes/post'; // Substitua pelo caminho correto do seu arquivo de rotas
+import likeRoutes from './routes/like';
 
 config();
 
-const app = express();
-const port = process.env.PORT || 3000;
+const port = parseInt(process.env.PORT, 10);
 
-app.use(
-  session({
-    secret: "Jpplay2_0",
-    resave: true,
-    saveUninitialized: true,
-  })
-);
+const fastify = Fastify({
+  logger: true
+});
 
-app.use(cors());
-app.use(express.json());
-app.use(morgan("dev"));
+fastify.register(cors, {
+  origin: true, 
+  methods: ['GET', 'PUT', 'POST', 'DELETE'] 
+});
 
-app.use(passport.initialize());
-app.use(passport.session());
+fastify.register(userRoutes);
+fastify.register(postRoutes);
+fastify.register(likeRoutes);
 
-logar(passport);
-
-app.use(user);
-app.use(post);
-app.use(like);
-
-app.listen(port, () => console.log(`Servidor rodando na porta ${port}`));
+fastify.listen({ port: port }, (err, address) => {
+    if (err) {
+      fastify.log.error(err);
+      process.exit(1);
+    }
+  });

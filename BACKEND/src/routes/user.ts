@@ -1,110 +1,97 @@
-import { Router } from "express";
+import axios from "axios";
+import { FastifyInstance } from "fastify";
 import { CreateUserRepository } from "../repositories/create-user/createUser";
 import { CreateUserController } from "../controllers/register-user/createUser";
 import { UpdateUserRepository } from "../repositories/update-user/updateUser";
 import { UpdateUserController } from "../controllers/update-user/updateUser";
 import { DeleteUserRepository } from "../repositories/delete-user/deleteUser";
 import { DeleteUserControler } from "../controllers/delete-user/deleteUser";
-import { PassportRequest } from "../controllers/protocols";
-import { ControllerLogUser } from "../controllers/log-user/logUser";
-import { logParams } from "../controllers/log-user/protocols";
-import axios from "axios";
 import { GetUsersRepository } from "../repositories/get-users/getUsers";
 import { GetUsersController } from "../controllers/get-users/getUsers";
+import { CreateUserParams } from "../controllers/register-user/protocols";
+import { GetUserPostsParams } from "../controllers/get-user-post/protocols";
+import { GetUsersParams } from "../controllers/get-users/protocols";
+import { logParams } from "../controllers/log-user/protocols";
+import { ControllerLogUser } from "../controllers/log-user/logUser";
 
-const app = axios.create({
-  baseURL: "https://email-4ocx.onrender.com"
-});
-
-const user = Router();
-
-user.post("/user", async (req, res) => {
-  const createUserRepository = new CreateUserRepository();
-
-  const createUserController = new CreateUserController(
-    createUserRepository
-  );
-
-  const { body, statusCode } = await createUserController.handle({
-    body: req.body,
+export default async function (fastify: FastifyInstance): Promise<void> {
+  const app = axios.create({
+    baseURL: "https://email-4ocx.onrender.com",
   });
 
-  return res.status(statusCode).send(body);
-});
+  fastify.post("/user", async (request, reply) => {
 
-user.get("/email/:email",async (req, res) => {
-  try {
-    const cod = (Math.random() * 999).toFixed(0);
+    const Body = request.body as CreateUserParams;
 
-    await app.post('/', {
+    const createUserRepository = new CreateUserRepository();
+    const createUserController = new CreateUserController(createUserRepository);
+    const { body, statusCode } = await createUserController.handle({
+      body: Body
+    });
+    reply.status(statusCode).send(body);
+  });
+
+  fastify.get("/email/:email", async (request, reply) => {
+    try {
+      const Params = request.params as GetUserPostsParams
+      const cod = (Math.random() * 999).toFixed(0);
+      await app.post("/", {
         from: process.env.EMAIL,
         password: process.env.PASSWORD,
-        to: req.params.email,
-        title: 'CÓDIGO DE VERIFICAÇÃO DO TWITTER',
-        content: cod
-    });
-
-    return res.status(200).send(cod);
-
-} catch (error) {
-    return res.send('Erro ao enviar o email:' + error);
-}
-})
-
-user.patch("/user/:email", async (req, res) => {
-  const updateUserRepository = new UpdateUserRepository();
-  const updateUserController = new UpdateUserController(
-    updateUserRepository
-  );
-
-  const { body, statusCode } = await updateUserController.handle({
-    body: req.body,
-    params: req.params,
-  });
-
-  return res.status(statusCode).send(body);
-});
-
-user.delete("/user/:email", async (req, res) => {
-  const deleteUserRepository = new DeleteUserRepository();
-  const deleteUserController = new DeleteUserControler(
-    deleteUserRepository
-  );
-
-  const { body, statusCode } = await deleteUserController.handle({
-    params: req.params,
-  });
-
-  return res.status(statusCode).send(body);
-});
-
-user.post("/login", async (req, res) => {
-  console.log(req.body);
-    try {
-        const controllerLogUser = new ControllerLogUser();
-        const {body, statusCode} = await controllerLogUser.handle(req as unknown as PassportRequest<logParams>);
-
-        res.status(statusCode).send(body);
+        to: Params,
+        title: "CÓDIGO DE VERIFICAÇÃO DO TWITTER",
+        content: cod,
+      });
+      reply.status(200).send(cod);
     } catch (error) {
-        res.status(500).send(error);
+      reply.send("Erro ao enviar o email: " + error);
     }
-});
+  });
 
-user.get("/search/:name",async (req, res) => {
-  try {
+  fastify.patch("/user/:email", async (request, reply) => {
+    const updateUserRepository = new UpdateUserRepository();
+    const updateUserController = new UpdateUserController(updateUserRepository);
+    const { body, statusCode } = await updateUserController.handle({
+      body: request.body,
+      params: request.params,
+    });
+    reply.status(statusCode).send(body);
+  });
 
-    const getUsersRepository = new GetUsersRepository();
-    const getUsersController = new GetUsersController(getUsersRepository);
+  fastify.delete("/user/:email", async (request, reply) => {
+    const deleteUserRepository = new DeleteUserRepository();
+    const deleteUserController = new DeleteUserControler(deleteUserRepository);
+    const { body, statusCode } = await deleteUserController.handle({
+      params: request.params,
+    });
+    reply.status(statusCode).send(body);
+  });
 
-    const { body , statusCode} = await getUsersController.handle({
-      body: req.params
-    })
+  fastify.get("/search/:name", async (request, reply) => {
+    const Params = request.params as GetUsersParams;
 
-    res.status(statusCode).send(body);
+    try {
+      const getUsersRepository = new GetUsersRepository();
+      const getUsersController = new GetUsersController(getUsersRepository);
+      const { body, statusCode } = await getUsersController.handle({
+        body: Params,
+      });
+      reply.status(statusCode).send(body);
+    } catch (error) {
+      reply.send(error);
+    }
+  });
 
-  } catch (error) {
-    return res.send(error)
-  }
-})
-
-export default user;
+  fastify.post("/login",async (request, reply) => {
+    const Body = request.body as logParams;
+    try {
+      const controllerLogUser = new ControllerLogUser();
+      const {body, statusCode} = await controllerLogUser.handle({
+        body: Body
+      });
+      reply.status(statusCode).send(body);
+    } catch (error) {
+      reply.send(error)
+    }
+  });
+}

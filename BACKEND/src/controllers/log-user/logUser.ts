@@ -1,32 +1,41 @@
-import passport from "passport";
-import { PassportRequest, HttpResponse, IController } from "../protocols";
+import { HttpRequest, HttpResponse, IController } from "../protocols";
 import { logParams } from "./protocols";
-import { User } from "../../models/user";
+import jwt from "jsonwebtoken"
+import bcrypt from "bcrypt"
+import prisma from "../../services/prisma";
 
 export class ControllerLogUser implements IController {
-  async handle(request: PassportRequest<logParams>): Promise<HttpResponse<User>> {
-    return new Promise((resolve, reject) => {
-      passport.authenticate('local', (err, user: User, info) => {
-        if (err) {
-          console.error(err);
-          reject({ statusCode: 500, body: { error: err } });
-          return;
-        }
-        if (!user) {
-          console.error(info);
-          reject({ statusCode: 401, body: { error: info } });
-          return;
-        }
+  async handle(request: HttpRequest<logParams>): Promise<HttpResponse<string>> {
+    const {body} = request 
+    const user = await prisma.user.findFirst({
+      where:{
+        email: body.email
+      }
+    })
 
-        request.logIn(user, (err) => {
-          if (err) {
-            console.error(err);
-            reject({ statusCode: 500, body: { error: err } });
-            return;
-          }
-          resolve({ statusCode: 200, body: user });
-        });
-      })(request);
-    });
+    if (!user) {
+      return {
+        statusCode: 400,
+        body: {mensage: "Essa conta não existe"}
+      }
+    }
+
+    const passwordConfirm = bcrypt.compare(body.password, (await user).password)
+
+    if (!passwordConfirm) {
+      return {
+        statusCode: 400,
+        body: {mensage: "Senha incorreta"}
+      }
+    }
+
+    const secretKey = process.env.SECRET_KEY;
+
+    const token = jwt.sign(user, secretKey, { expiresIn: '1h' });
+
+    return {
+      statusCode: 200,
+      body: token
+    }
   }
 }
