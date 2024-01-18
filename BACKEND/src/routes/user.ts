@@ -20,20 +20,19 @@ export default async function (fastify: FastifyInstance): Promise<void> {
   });
 
   fastify.post("/user", async (request, reply) => {
-
     const Body = request.body as CreateUserParams;
 
     const createUserRepository = new CreateUserRepository();
     const createUserController = new CreateUserController(createUserRepository);
     const { body, statusCode } = await createUserController.handle({
-      body: Body
+      body: Body,
     });
     reply.status(statusCode).send(body);
   });
 
   fastify.get("/email/:email", async (request, reply) => {
     try {
-      const Params = request.params as GetUserPostsParams
+      const Params = request.params as GetUserPostsParams;
       const cod = (Math.random() * 999).toFixed(0);
       await app.post("/", {
         from: process.env.EMAIL,
@@ -82,16 +81,16 @@ export default async function (fastify: FastifyInstance): Promise<void> {
     }
   });
 
-  fastify.post("/login",async (request, reply) => {
+  fastify.post("/login", async (request, reply) => {
     const Body = request.body as logParams;
     try {
       const controllerLogUser = new ControllerLogUser();
-      const {body, statusCode} = await controllerLogUser.handle({
-        body: Body
+      const { body, statusCode } = await controllerLogUser.handle({
+        body: Body,
       });
       reply.status(statusCode).send(body);
     } catch (error) {
-      reply.send(error)
+      reply.send(error);
     }
   });
 }

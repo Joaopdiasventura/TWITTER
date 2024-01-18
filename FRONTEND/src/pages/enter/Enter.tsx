@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { css } from './Css';
 
 const app = axios.create({
-    baseURL: "http://localhost:3000"
+    baseURL: "https://twitter-3y8z.onrender.com"
 });
 
 const Body = css();

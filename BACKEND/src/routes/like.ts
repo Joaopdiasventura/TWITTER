@@ -8,7 +8,9 @@ export default async function (fastify: FastifyInstance): Promise<void> {
     const Body = request.body as createLikeParams;
 
     if (!Body || !Body.creator || !Body.post) {
-      return reply.status(400).send({ message: "Missing required fields: creator and post" });
+      return reply
+        .status(400)
+        .send({ message: "Missing required fields: creator and post" });
     }
 
     const createLikeRepository = new CreateLikeRepository();

@@ -1,6 +1,6 @@
+import { config } from "dotenv";
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
-import { config } from "dotenv";
 import userRoutes from './routes/user';
 import postRoutes from './routes/post';
 import likeRoutes from './routes/like';
@@ -14,8 +14,8 @@ const fastify = Fastify({
 });
 
 fastify.register(cors, {
-  origin: true, 
-  methods: ['GET', 'PUT', 'POST', 'DELETE'] 
+  origin: true,
+  methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH']
 });
 
 fastify.register(userRoutes);
