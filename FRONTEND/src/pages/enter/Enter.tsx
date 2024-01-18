@@ -41,17 +41,21 @@ function Enter() {
 
     const logar = async (event: FormEvent) => {
         event.preventDefault();
-
+    
         const email = emailLoginRef.current?.value;
         const password = senhaLoginRef.current?.value;
-
+    
         if (email && password) {
             try {
                 console.log(email);
                 const result = await app.post<FormData>("login", { email, password }).then(result => result.data);
-                localStorage.setItem("token", result);
+                
+                const serializedResult = JSON.stringify(result);
+                
+                localStorage.setItem("token", serializedResult);
+    
                 setTimeout(() => {
-                    navigate('/user');
+                    navigate('/post');
                 }, 500);
             } catch (error) {
                 console.error("Erro ao logar:", error);
@@ -88,8 +92,12 @@ function Enter() {
             if (name && email && password && senha2 && password === senha2) {
                 try {
                     const result = await app.post("/user", { name, email, password }).then(result => result.data);
-                    await localStorage.setItem("email", result.email);
-                    navigate('/user');
+                    const serializedResult = JSON.stringify(result);
+                
+                    localStorage.setItem("token", serializedResult);
+                    setTimeout(() => {
+                        navigate('/post');
+                    }, 500);
                 } catch (error) {
                     console.error("Erro ao registrar:", error);
                 }

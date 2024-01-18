@@ -3,10 +3,11 @@ import { sendUser } from "../helpers";
 import { HttpRequest, HttpResponse, IController } from "../protocols";
 import { CreateUserParams, ICreateUserRepository } from "./protocols";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export class CreateUserController implements IController{
     constructor (private readonly createUserRepository: ICreateUserRepository) {}
-    async handle(httpRequest: HttpRequest<CreateUserParams>): Promise<HttpResponse<User>> {
+    async handle(httpRequest: HttpRequest<CreateUserParams>): Promise<HttpResponse<string>> {
         try {
             const {body} = httpRequest;
 
@@ -29,7 +30,14 @@ export class CreateUserController implements IController{
 
             const user = await this.createUserRepository.createUser(body);
 
-            return sendUser(201, user);
+            const secretKey = process.env.SECRET_KEY;
+
+            const token = jwt.sign(user, secretKey, { expiresIn: '1h' });
+
+            return {
+                statusCode: 200,
+                body: token
+              }
 
         } catch (error) {
             console.log(`${error}`);

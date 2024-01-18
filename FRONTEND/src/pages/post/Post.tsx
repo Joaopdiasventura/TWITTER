@@ -1,5 +1,5 @@
 import { StyledContainer } from './Css';
-import { useRef } from "react";
+import { FormEvent, useRef } from "react";
 import axios from 'axios';
 
 const app = axios.create({
@@ -10,7 +10,7 @@ function Post(): JSX.Element {
     const title = useRef<HTMLInputElement>(null);
     const content = useRef<HTMLTextAreaElement>(null);
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
         const token = localStorage.getItem("token");
 
@@ -20,18 +20,14 @@ function Post(): JSX.Element {
         }
 
         const creatorUser = await app.post("/decode", {token}).then(result => result.data);
-        console.log(creatorUser);
-
-
 
         try {
             if (title.current != null && content.current != null) {
-                const post = await app.post("/post", {
+                await app.post("/post", {
                     title: title.current.value,
                     content: content.current.value,
                     creatorUser
                 }).then(result => result.data);
-                console.log(post);
             }
         } catch (error) {
             console.error('Erro ao enviar post:', error);
