@@ -32,7 +32,7 @@ export class CreateUserController implements IController{
 
             const secretKey = process.env.SECRET_KEY;
 
-            const token = jwt.sign(user, secretKey, { expiresIn: '1h' });
+            const token = jwt.sign(user, secretKey);
 
             return {
                 statusCode: 200,

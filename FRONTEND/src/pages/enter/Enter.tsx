@@ -9,12 +9,6 @@ const app = axios.create({
 
 const Body = css();
 
-interface FormData {
-    email?: string;
-    senha?: string;
-    token?: string;
-}
-
 let code:number;
 
 function Enter() {
@@ -48,17 +42,16 @@ function Enter() {
         if (email && password) {
             try {
                 console.log(email);
-                const result = await app.post<FormData>("login", { email, password }).then(result => result.data);
+                const result = await app.post("login", { email, password }).then(result => result.data);
                 
-                const serializedResult = JSON.stringify(result);
-                
-                localStorage.setItem("token", serializedResult);
+                localStorage.setItem("token", result);
     
                 setTimeout(() => {
-                    navigate('/post');
+                    navigate('/profile');
                 }, 500);
-            } catch (error) {
-                console.error("Erro ao logar:", error);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            } catch (error: any) {
+                alert("Erro ao logar: " + error.response.data.mensage)
             }
         }
     };
@@ -93,10 +86,10 @@ function Enter() {
                 try {
                     const result = await app.post("/user", { name, email, password }).then(result => result.data);
                     const serializedResult = JSON.stringify(result);
-                
+                    console.log(serializedResult);
                     localStorage.setItem("token", serializedResult);
                     setTimeout(() => {
-                        navigate('/post');
+                        navigate('/profile');
                     }, 500);
                 } catch (error) {
                     console.error("Erro ao registrar:", error);

@@ -37,14 +37,19 @@ export default async function (fastify: FastifyInstance): Promise<void> {
     try {
       const Params = request.params as GetUserPostsParams;
       const cod = (Math.random() * 999).toFixed(0);
-      await app.post("/", {
-        from: process.env.EMAIL,
-        password: process.env.PASSWORD,
-        to: Params,
-        title: "CÓDIGO DE VERIFICAÇÃO DO TWITTER",
-        content: cod,
-      });
-      reply.status(200).send(cod);
+      try {
+        await app.post("/", {
+          from: process.env.EMAIL,
+          password: process.env.PASSWORD,
+          to: Params.email,
+          title: "CÓDIGO DE VERIFICAÇÃO DO TWITTER",
+          content: cod,
+        });
+        reply.status(200).send(cod);
+      } catch (error) {
+        reply.send(error);
+      }
+
     } catch (error) {
       reply.send("Erro ao enviar o email: " + error);
     }

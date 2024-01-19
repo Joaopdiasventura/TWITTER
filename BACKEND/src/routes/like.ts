@@ -2,6 +2,9 @@ import { FastifyInstance } from "fastify";
 import { CreateLikeRepository } from "../repositories/create-like/createLike";
 import { CreateLikeController } from "../controllers/create-like/createLike";
 import { createLikeParams } from "../controllers/create-like/protocols";
+import { GetLikesParams } from "../controllers/getLikes/protocols";
+import { GetLikesRepository } from "../repositories/get-likes/getLikes";
+import { GetLikesController } from "../controllers/getLikes/getLikes";
 
 export default async function (fastify: FastifyInstance): Promise<void> {
   fastify.post("/like", async (request, reply) => {
@@ -23,6 +26,22 @@ export default async function (fastify: FastifyInstance): Promise<void> {
       reply.status(statusCode).send(body);
     } catch (error) {
       reply.send(error);
+    }
+  });
+
+  fastify.get("/likes/:post", async (request, reply) => {
+    const Params = request.params as GetLikesParams;
+
+    const getLikesRepository = new GetLikesRepository();
+    const getLikesController = new GetLikesController(getLikesRepository);
+
+    try {
+      const {body, statusCode} = await getLikesController.handle({
+        params: Params
+      });
+      reply.status(statusCode).send(body);
+    } catch (error) {
+      reply.send(error)
     }
   });
 }

@@ -1,12 +1,14 @@
 import { StyledContainer } from './Css';
 import { FormEvent, useRef } from "react";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const app = axios.create({
     baseURL: "https://twitter-3y8z.onrender.com"
 });
 
 function Post(): JSX.Element {
+    const navigate = useNavigate();
     const title = useRef<HTMLInputElement>(null);
     const content = useRef<HTMLTextAreaElement>(null);
 
@@ -27,7 +29,7 @@ function Post(): JSX.Element {
                     title: title.current.value,
                     content: content.current.value,
                     creatorUser
-                }).then(result => result.data);
+                }).then(()=>{navigate("/profile")});
             }
         } catch (error) {
             console.error('Erro ao enviar post:', error);

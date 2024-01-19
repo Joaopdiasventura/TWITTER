@@ -20,7 +20,7 @@ export class ControllerLogUser implements IController {
       }
     }
 
-    const passwordConfirm = bcrypt.compare(body.password, (await user).password)
+    const passwordConfirm = bcrypt.compare(body.password, user.password)
 
     if (!passwordConfirm) {
       return {
@@ -31,7 +31,7 @@ export class ControllerLogUser implements IController {
 
     const secretKey = process.env.SECRET_KEY;
 
-    const token = jwt.sign(user, secretKey, { expiresIn: '1h' });
+    const token = jwt.sign(user, secretKey);
 
     return {
       statusCode: 200,
