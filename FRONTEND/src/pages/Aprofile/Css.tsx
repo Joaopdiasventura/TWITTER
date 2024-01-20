@@ -13,6 +13,11 @@ export const StyledContainer = styled.div`
     height: 100%;
     font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
 
+    h1 {
+      color: #dadada;
+      margin-bottom: 20px;
+    }
+
     nav {
       display: flex;
       justify-content: center;
@@ -30,11 +35,6 @@ export const StyledContainer = styled.div`
       }
     }
 
-    h1 {
-      color: #dadada;
-      margin-bottom: 20px;
-    }
-
     .posts {
       max-height: 500px;
       overflow-y: auto;
@@ -45,7 +45,6 @@ export const StyledContainer = styled.div`
         border-radius: 10px;
         padding: 10px;
         margin-bottom: 10px;
-        position: relative;
 
         h3 {
           color: #b9b9b9;
@@ -56,7 +55,6 @@ export const StyledContainer = styled.div`
         p {
           color: #666;
           margin-bottom: 10px;
-          margin-top: 5px;
           word-wrap: break-word;
         }
 
@@ -73,17 +71,6 @@ export const StyledContainer = styled.div`
           cursor: pointer;
           font-size: 16px;
           margin-top: 5px;
-          color: #ffffff;
-        }
-
-        .delete {
-          position: absolute;
-          top: 10px; /* Ajuste este valor conforme necessário */
-          right: 10px; /* Ajuste este valor conforme necessário */
-          background-color: #000000;
-          border: none;
-          cursor: pointer;
-          font-size: 16px;
           color: #ffffff;
         }
       }

@@ -41,7 +41,6 @@ function Enter() {
     
         if (email && password) {
             try {
-                console.log(email);
                 const result = await app.post("login", { email, password }).then(result => result.data);
                 
                 localStorage.setItem("token", result);
@@ -63,7 +62,6 @@ function Enter() {
         if (email) {
             try {
                 const cod = await app.get(`/email/${email}`).then(result => result.data);
-                console.log(cod);
                 code = cod;
                 setShowVerification(true); 
             } catch (error) {
@@ -85,9 +83,7 @@ function Enter() {
             if (name && email && password && senha2 && password === senha2) {
                 try {
                     const result = await app.post("/user", { name, email, password }).then(result => result.data);
-                    const serializedResult = JSON.stringify(result);
-                    console.log(serializedResult);
-                    localStorage.setItem("token", serializedResult);
+                    localStorage.setItem("token", result);
                     setTimeout(() => {
                         navigate('/profile');
                     }, 500);

@@ -13,11 +13,32 @@ export const StyledContainer = styled.div`
     .container {
         text-align: center;
     }
+    
+    nav {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+
+    a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: bold;
+
+      &:hover {
+        color: #ffd700; 
+      }
+    }
+  }
 
     form {
         display: flex;
         flex-direction: column;
         gap: 15px;
+    }
+
+    h1{
+        margin: 10px;
     }
 
     textarea, input {
